@@ -159,6 +159,14 @@ other 4xx errors — those fail fast. If the retry also returns 429, a
 
 Zero runtime dependencies. The entire library ships as a single ~10 KB file.
 
+## Support
+
+- Questions: [support@scrift.app](mailto:support@scrift.app)
+- Bugs: [GitHub Issues](https://github.com/Vercroft/scrift-js/issues)
+- Security issues: report them privately through the repository's
+  [Security tab](https://github.com/Vercroft/scrift-js/security) ("Report a vulnerability"), never in a
+  public issue.
+
 ## Links
 
 - Homepage: [https://scrift.app](https://scrift.app)
