@@ -6,6 +6,6 @@
  * every runtime (browser, Deno, Cloudflare Workers, edge) without needing
  * JSON import assertions or filesystem access.
  *
- * Keep this in sync with `package.json` on every release.
+ * `tests/package.test.ts` fails when it differs from `package.json`.
  */
 export const VERSION = '0.2.0';

@@ -3,9 +3,10 @@
  *
  * A matrix job's check name carries its Node version (`Node 24`), so a required check named that
  * way breaks the day the matrix changes. One job that needs every other job, and fails unless each
- * passed or was skipped, keeps the required name stable. Two ways it could stop meaning anything,
+ * passed or was skipped, keeps the required name stable. Three ways it could stop meaning anything,
  * and each has a test here: a job added to `ci.yml` but left out of `needs` runs with nothing
- * requiring it to pass, and a verdict that accepts a failure lets every job fail behind a green check.
+ * requiring it to pass, a verdict that accepts a failure lets every job fail behind a green check,
+ * and an `if:` on another job skips that job, which the gate counts as passed.
  */
 import { spawnSync } from 'node:child_process';
 import { mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
@@ -19,6 +20,10 @@ import { parse } from 'yaml';
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..', '..');
 const CI = path.join(ROOT, '.github', 'workflows', 'ci.yml');
 const GATE = 'gate-summary';
+// The only job-level conditions, each with its reason. A job skipped by its own `if:` counts as passed.
+const CONDITIONS: Record<string, string> = {
+  [GATE]: 'always()', // the gate must report even when a job it needs failed
+};
 
 interface Step {
   run?: string;
@@ -75,6 +80,15 @@ describe('Gate summary', () => {
     const needed = new Set(typeof raw === 'string' ? [raw] : raw);
     const missing = Object.keys(jobs()).filter((job) => job !== GATE && !needed.has(job));
     expect(missing, `\`${GATE}\` does not need these, so nothing requires them to pass`).toEqual([]);
+  });
+
+  it('has no job condition but the listed ones', () => {
+    const found = Object.fromEntries(
+      Object.entries(jobs()).flatMap(([id, job]) => (job.if === undefined ? [] : [[id, job.if]])),
+    );
+    expect(found, 'a job skipped by its own `if:` counts as passed; list a new condition here with its reason').toEqual(
+      CONDITIONS,
+    );
   });
 
   it.each(['failure', 'cancelled'])('fails when a job ended in %s', (bad) => {
