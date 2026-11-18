@@ -41,7 +41,7 @@
     "node": ">=24"
   },
   "scripts": {
-    "lint": "eslint src/ tests/",
+    "lint": "eslint --max-warnings 0 src/ tests/",
     "build": "tsup",
     "typecheck": "tsc --noEmit && tsc -p tsconfig.tests.json",
     "test": "vitest run",
