@@ -1,0 +1,10 @@
+# Findings in git history that are not secrets. History is not rewritten, so each is listed here by fingerprint
+# (commit:file:rule:line), grouped by rule, with why it is safe. A new finding is fixed in the tree, never
+# added here.
+
+# email (2): A project role address in the first release's package metadata and contribution guide; it is no person's address, and the tree no longer has it.
+08b89be15e947b1b145c21fc987a50b39d460fb0:docs/CONTRIBUTING.md:email:138
+08b89be15e947b1b145c21fc987a50b39d460fb0:package.json:email:15
+
+# url-host (1): The licence badge's image host in the first release's README; the tree no longer links it.
+08b89be15e947b1b145c21fc987a50b39d460fb0:README.md:url-host:3
