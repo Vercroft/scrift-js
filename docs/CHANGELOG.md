@@ -6,6 +6,18 @@ this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Changed
+
+- Releases are published with npm trusted publishing, so each one carries npm
+  provenance, and come with a CycloneDX SBOM attested against the published
+  tarball.
+- The copyright holder is Vercroft.
+
+### Removed
+
+- **Breaking:** Node.js 18, 20 and 22 are no longer supported; the minimum is
+  Node.js 24 (`engines`: `>=24`).
+
 ## [0.2.0] - 2026-04-12
 
 ### Added
@@ -36,19 +48,19 @@ this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - Legacy `sk_*`-style API key prefixes (explicitly rejected; use `scrf_*` or
   opaque legacy keys per current API).
 
-## [0.1.0] — 2026-04-09
+## [0.1.0] - 2026-04-09
 
 Initial release.
 
 ### Added
 
-- `Scrift` / `ScriftClient` — main client class, constructed with
+- `Scrift` / `ScriftClient` - main client class, constructed with
   `{ apiKey, baseUrl?, timeoutMs?, fetch? }`.
 - `CatalogResource` with methods:
-  - `get(slug)` — fetch a single brand
-  - `list({ limit?, offset? })` — paginated listing
-  - `batch(slugs)` — bulk lookup (up to 50 slugs)
-  - `search(query, { limit? })` — name-based search
+  - `get(slug)` - fetch a single brand
+  - `list({ limit?, offset? })` - paginated listing
+  - `batch(slugs)` - bulk lookup (up to 50 slugs)
+  - `search(query, { limit? })` - name-based search
 - `SvgResource` with `get(slug, { variant? })` returning raw SVG
   markup as a string.
 - `BrandResource` with `get(domain)` for domain-to-brand resolution.
@@ -61,10 +73,10 @@ Initial release.
   `APIError` (other).
 - `RateLimitError.retryAfter` / `ScriftRateLimitError.retryAfter` exposing the
   parsed `Retry-After` header.
-- Automatic retry on HTTP 429 — exactly once, honoring `Retry-After`
+- Automatic retry on HTTP 429 - exactly once, honoring `Retry-After`
   (both delta-seconds and HTTP-date forms), capped at 30 seconds.
 - Per-request 30s timeout, implemented with `AbortController`.
-- Zero runtime dependencies — ships as a single bundle with no
+- Zero runtime dependencies - ships as a single bundle with no
   `dependencies` block in `package.json`.
 - Dual ESM + CJS builds with TypeScript declaration files.
 - Works on Node.js 18+, browsers, Deno, Bun, Cloudflare Workers,

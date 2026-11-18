@@ -4,7 +4,7 @@ export default defineConfig({
   entry: ['src/index.ts'],
   format: ['esm', 'cjs'],
   // tsup's DTS pipeline injects `baseUrl` for rollup (egoist/tsup#1388); TypeScript 6
-  // deprecates that. Scope suppression to this step only — not project `tsc`.
+  // deprecates that. Scope suppression to this step only - not project `tsc`.
   dts: {
     compilerOptions: {
       ignoreDeprecations: '6.0',
@@ -17,7 +17,7 @@ export default defineConfig({
   outDir: 'dist',
   splitting: false,
   treeshake: true,
-  // Zero runtime dependencies — nothing to externalize.
+  // Zero runtime dependencies - nothing to externalize.
   external: [],
   outExtension({ format }) {
     return {

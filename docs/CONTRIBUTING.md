@@ -1,138 +1,67 @@
 # Contributing to `scrift-sdk`
 
-Thanks for your interest in improving the SDK! This document covers how
-to get a development environment set up, the quality bar we hold every
-PR to, and the process for shipping changes.
+How to report a bug, who may open pull requests and how to report a vulnerability are the same for
+every Vercroft repository: see the organisation's
+[contribution guide](https://github.com/Vercroft/.github/blob/main/CONTRIBUTING.md) and
+[security policy](https://github.com/Vercroft/.github/blob/main/SECURITY.md). This page holds only
+what is specific to this repository.
 
-## Prerequisites
+## Set up
 
-- **Node.js 18 or higher.** The SDK and test suite both rely on the
-  built-in `fetch`, `AbortController`, and `URL` APIs available in Node
-  18+.
-- **npm** (bundled with Node). Other package managers (`pnpm`, `yarn`,
-  `bun`) will work for installing deps, but CI runs against `npm`.
-
-Check your Node version:
+- **Node.js 24 or later.** `.nvmrc` names the version CI builds and publishes with.
+- **npm**, bundled with Node. CI installs with `npm ci` from `package-lock.json`.
 
 ```bash
-node --version  # must print v18.x or higher
-```
-
-## Setup
-
-```bash
-git clone https://github.com/phazeo/scrift-js.git
+git clone https://github.com/Vercroft/scrift-js.git
 cd scrift-js
-npm install
+npm ci
+pre-commit install   # the gitleaks hook, from .pre-commit-config.yaml
 ```
 
-That's it. There are no secrets, no services to start, no database to
-seed — the SDK is a pure HTTP client.
+The SDK is a pure HTTP client: no secrets, services or database are needed to develop or test it.
 
-## Project structure
+## Commands
 
-See [`docs/ARCHITECTURE.md`](./ARCHITECTURE.md) for the full layer
-diagram and the rules around dependency direction. The short version:
+Each row is what CI runs, in the job named in the last column.
 
-```
-src/
-├── client.ts       ← entry point, wires resources to HttpClient
-├── http.ts         ← the ONLY place that touches fetch / headers / retries
-├── errors.ts       ← error classes (ScriftError + 5 subclasses)
-├── types.ts        ← all TypeScript types and interfaces
-└── resources/      ← thin method wrappers, one file per API surface
-```
+| To | Run | CI job |
+|---|---|---|
+| Lint | `npm run lint` | Node 24, Node 26 |
+| Type check the SDK, then the SDK with the tests (`tsconfig.tests.json`) | `npm run typecheck` | Node 24, Node 26 |
+| Run the tests with the coverage floor of `vitest.config.ts` | `npm run test:coverage` | Node 24, Node 26 |
+| Build the ESM, CJS and type declarations into `dist/` | `npm run build` | Node 24, Node 26 |
+| Check that every lint suppression names one rule, gives a reason and is listed in `.suppressions` | `sh scripts/check-suppressions.sh` | Suppressions are listed |
+| Find em and en dashes (use a hyphen, a colon or a new sentence; decision records stay as written) | `git grep -nP '[\x{2013}\x{2014}]' -- . ':!package-lock.json' ':!docs/decisions/'` | No em or en dashes |
+| Audit the workflows (set up once: `VENV="${TMPDIR:-/tmp}/scrift-js-ci-venv"; python3 -m venv "$VENV"; "$VENV/bin/pip" install --require-hashes -r .github/requirements/zizmor.txt`) | `"$VENV/bin/zizmor" --offline .github/workflows` | zizmor |
+| Check the links between the repository's own files | `lychee --offline --no-progress './**/*.md'` | Local links |
+| Scan the staged changes for secrets with `.gitleaks.toml` (CI scans the full history) | `pre-commit run gitleaks` | Secret scan / Full history |
 
-## Quality gates
+A lint suppression follows the organisation's
+[suppression rules](https://github.com/Vercroft/engineering-practices/blob/main/docs/suppressions.md): one rule,
+a reason on the line, and a line in `.suppressions` added in the same pull request.
 
-Every PR must pass all of the following:
+A pull request needs these checks: `Gate summary` (it passes only when every CI job passed or was
+skipped), `Secret scan / Full history`, `Analyze (actions)`, `Analyze (javascript-typescript)` and
+`Local links`.
 
-```bash
-npm run typecheck      # tsc --noEmit, strict mode
-npm run test           # vitest, all suites
-npm run test:coverage  # coverage ≥ 85% statements / branches / functions / lines
-npm run build          # tsup produces ESM + CJS + .d.ts
-```
+Tests never make real network calls: `tests/fixtures.ts` has `createFetchStub`, a queue-backed fake
+`fetch` passed through the `fetch` constructor option. `tests/ci/` checks the workflows and the
+supported Node versions.
 
-A single command that runs the lot:
+## Repository map
 
-```bash
-npm run typecheck && npm run test:coverage && npm run build
-```
+| Path | What it holds |
+|---|---|
+| `src/` | The SDK; [ARCHITECTURE.md](./ARCHITECTURE.md) explains the layers and how to add an endpoint or a resource |
+| `tests/` | vitest suites, one per resource, and `tests/ci/` |
+| `docs/` | Architecture, this guide, the changelog and `decisions/` |
+| `.github/workflows/` | CI with its Gate summary, the npm release, the secret scan, CodeQL, Scorecard and the link checks |
+| `.github/requirements/` | The hash-pinned CI tools (zizmor) |
+| `.github/dependabot.yml` | Monthly grouped updates for the actions, the npm packages and the CI tools |
+| `.gitleaks.toml`, `.gitleaksignore`, `.pre-commit-config.yaml` | The secret and personal-data rules, the history findings that are not secrets, and the git hook |
+| `.nvmrc` | The Node version that builds and publishes |
+| `.npmrc` | npm's supply-chain settings: install scripts are not run, and `npm install` saves exact versions |
+| `scripts/check-suppressions.sh`, `.suppressions` | The suppression check and the listing it compares against |
+| `tsconfig.tests.json` | Type-checks the tests too, so a stale `@ts-expect-error` fails |
 
-### Coverage floor
-
-Coverage is enforced at **85% minimum** across statements, branches,
-functions, and lines, via `vitest.config.ts`. New code should not lower
-coverage. In practice we aim for ≥ 95% on new files.
-
-## Making changes
-
-### Adding a new endpoint
-
-1. Add any new response shapes to `src/types.ts` — preserve the API's
-   camelCase field names exactly.
-2. Add a one-line method to the appropriate file in `src/resources/`.
-3. Add tests under `tests/{resource}.test.ts`: one happy-path test and
-   at least one error test.
-4. Update the method-reference table in `README.md`.
-
-You should not need to touch `http.ts`, `client.ts`, or `errors.ts`
-for a new endpoint. If you do, something unusual is going on — flag it
-in the PR description so reviewers can sanity-check.
-
-### Adding a new resource
-
-1. Create `src/resources/{name}.ts`.
-2. Register and expose it in `src/client.ts`.
-3. Re-export the class from `src/index.ts`.
-4. Create `tests/{name}.test.ts` with its own fixture setup.
-
-### Changing error behavior or the HTTP layer
-
-Changes to `http.ts` or `errors.ts` are load-bearing. They affect
-every single SDK call, so please:
-
-- Open an issue first to discuss the change.
-- Add tests that cover both the new behavior and any previously
-  covered behavior that could regress.
-- Bump the MAJOR version if the change breaks existing error-handling
-  code in downstream apps.
-
-## Testing conventions
-
-- Tests use **vitest** and live in `tests/`.
-- **Never make real network calls.** The `createFetchStub` helper in
-  `tests/fixtures.ts` builds a queue-backed fake `fetch`. Pass it
-  through the `fetch` constructor option on `Scrift`.
-- One `describe` block per method, one `it` per behavior. Short,
-  focused assertions beat long omnibus tests.
-- Error tests should assert on the class (`instanceof`), the status
-  code, and the error code — not just the class.
-
-## Submitting a PR
-
-1. Fork and create a feature branch: `git checkout -b feat/your-feature`.
-2. Make your changes. Keep the PR focused — one logical change per PR.
-3. Run all quality gates locally and make sure they pass.
-4. Open a PR against `main`. In the description, explain:
-   - What the change does.
-   - Why it's needed.
-   - Any user-facing impact (new methods, new error classes, etc.).
-5. A maintainer will review and either merge or request changes.
-
-## Reporting bugs
-
-Open an issue at
-[github.com/phazeo/scrift-js/issues](https://github.com/phazeo/scrift-js/issues)
-with:
-
-- Your Node.js version (`node --version`).
-- Your SDK version (`npm ls scrift-sdk`).
-- A minimal reproduction (5–20 lines is ideal).
-- What you expected to happen.
-- What actually happened, including the full error.
-
-## Questions
-
-Email `hello@phazeo.com` or open a GitHub Discussion.
+`dist/` and `coverage/` are generated; never edit or commit them.

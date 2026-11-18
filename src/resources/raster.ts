@@ -1,5 +1,5 @@
 /**
- * Raster resource — `GET /v1/png/{slug}` and `GET /v1/webp/{slug}`.
+ * Raster resource - `GET /v1/png/{slug}` and `GET /v1/webp/{slug}`.
  *
  * Returns raw image bytes as {@link ArrayBuffer} for use in browsers, Node,
  * and edge runtimes without Node-specific APIs.

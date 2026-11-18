@@ -1,8 +1,8 @@
 /**
- * Brand resource — wraps `GET /v1/brand?domain=…`.
+ * Brand resource - wraps `GET /v1/brand?domain=…`.
  *
  * Unlike catalog lookups (which key off a slug), this endpoint keys off a
- * website domain — so given `"stripe.com"` it will return Stripe's brand
+ * website domain - so given `"stripe.com"` it will return Stripe's brand
  * entry. Useful when you only know the site a user is on, not the canonical
  * slug.
  */

@@ -33,7 +33,7 @@ export class ScriftError extends Error {
   }
 }
 
-/** Raised on HTTP 401 — missing, malformed, or revoked API key. */
+/** Raised on HTTP 401 - missing, malformed, or revoked API key. */
 export class AuthenticationError extends ScriftError {
   constructor(message: string, init: ScriftErrorInit = {}) {
     super(message, init);
@@ -42,7 +42,7 @@ export class AuthenticationError extends ScriftError {
   }
 }
 
-/** Raised on HTTP 404 — the requested resource does not exist. */
+/** Raised on HTTP 404 - the requested resource does not exist. */
 export class NotFoundError extends ScriftError {
   constructor(message: string, init: ScriftErrorInit = {}) {
     super(message, init);
@@ -57,7 +57,7 @@ export interface ScriftRateLimitErrorInit extends ScriftErrorInit {
 }
 
 /**
- * Raised on HTTP 429 — the rate limit for the current API key has been
+ * Raised on HTTP 429 - the rate limit for the current API key has been
  * exhausted.
  *
  * The SDK automatically retries 429s once (respecting the `Retry-After`
@@ -80,7 +80,7 @@ export class ScriftRateLimitError extends ScriftError {
  */
 export const RateLimitError = ScriftRateLimitError;
 
-/** Raised on HTTP 422 — request parameters failed server-side validation. */
+/** Raised on HTTP 422 - request parameters failed server-side validation. */
 export class ValidationError extends ScriftError {
   constructor(message: string, init: ScriftErrorInit = {}) {
     super(message, init);

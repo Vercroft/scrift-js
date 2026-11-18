@@ -2,7 +2,7 @@
  * Type definitions for the Scrift API.
  *
  * All shapes mirror the REST API response format exactly (camelCase field
- * names preserved). The SDK does not reshape payloads — the response you get
+ * names preserved). The SDK does not reshape payloads - the response you get
  * back from each method is a direct, typed view of the JSON returned by
  * api.scrift.app.
  *

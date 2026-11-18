@@ -1,0 +1,123 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+concurrency:
+  group: ci-${{ github.ref }}-${{ github.event_name }}
+  cancel-in-progress: true
+
+permissions: {}
+
+jobs:
+  # The package's own checks, on every supported Node line (package.json "engines").
+  node:
+    name: Node ${{ matrix.node }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+    strategy:
+      fail-fast: false
+      matrix:
+        node: ['24', '26']
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6.5.0
+        with:
+          node-version: ${{ matrix.node }}
+          package-manager-cache: false
+      - name: Install (lockfile must be current)
+        run: npm ci
+      - name: Lint
+        run: npm run lint
+      - name: Type check
+        run: npm run typecheck
+      - name: Tests with the coverage floor
+        run: npm run test:coverage
+      - name: Build
+        run: npm run build
+      - name: Smoke test
+        run: node -e "const s = require('./dist/index.cjs'); console.log('OK:', typeof s.ScriftClient)"
+
+  # Static analysis of the workflows, from a hash-pinned zizmor.
+  zizmor:
+    name: zizmor
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Audit the workflows
+        run: |
+          python3 -m venv "$RUNNER_TEMP/venv"
+          "$RUNNER_TEMP/venv/bin/pip" install --quiet --require-hashes -r .github/requirements/zizmor.txt
+          "$RUNNER_TEMP/venv/bin/zizmor" --offline .github/workflows
+
+  # Every lint suppression names one rule, gives a reason and is listed in .suppressions.
+  suppressions:
+    name: Suppressions are listed
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Compare the suppressions in the code with .suppressions
+        run: sh scripts/check-suppressions.sh
+
+  # No em or en dash in any file we write. Decision records are history and stay as written; the
+  # lockfile is generated.
+  dashes:
+    name: No em or en dashes
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Find em and en dashes
+        run: |
+          if git grep -nP '[\x{2013}\x{2014}]' -- . ':!package-lock.json' ':!docs/decisions/'; then
+            echo "Use a hyphen, a colon or a new sentence instead of the dashes above." >&2
+            exit 1
+          fi
+
+  # The one CI check the ruleset requires. The matrix check names carry the Node version and change
+  # with it; this name does not. `if: always()` so a failed job cannot skip it, and it fails unless
+  # every job it needs passed or was skipped. tests/ci/gate-summary.test.ts fails when a job in this
+  # file is missing from `needs`.
+  gate-summary:
+    name: Gate summary
+    if: always()
+    needs: [node, zizmor, suppressions, dashes]
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions: {}
+    steps:
+      - name: Require every needed job to have passed or been skipped
+        env:
+          NEEDS_JSON: ${{ toJSON(needs) }}
+        run: |
+          node <<'JS'
+          const results = Object.entries(JSON.parse(process.env.NEEDS_JSON)).map(([job, need]) => [job, need.result]);
+          for (const [job, result] of results.sort()) console.log(`${job}: ${result}`);
+          const bad = results.filter(([, result]) => result !== 'success' && result !== 'skipped');
+          if (results.length === 0 || bad.length > 0) {
+            const list = bad.map(([job, result]) => `${job}=${result}`).join(', ') || 'no jobs';
+            console.error(`not every needed job passed or was skipped: ${list}`);
+            process.exit(1);
+          }
+          JS

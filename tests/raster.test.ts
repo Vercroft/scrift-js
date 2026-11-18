@@ -53,7 +53,7 @@ describe('RasterResource.getPng', () => {
     const client = makeClient(async () => new Response());
     expect(() => {
       void (
-        // @ts-expect-error — intentionally invalid size for runtime validation
+        // @ts-expect-error -- an invalid size on purpose, to test the runtime validation
         client.raster.getPng('stripe', { size: 100 })
       );
     }).toThrow(TypeError);

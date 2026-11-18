@@ -1,11 +1,24 @@
 # scrift-sdk
 
-[![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)](./LICENSE)
-
 The official TypeScript SDK for the [Scrift](https://scrift.app) brand asset
 API. A thin, typed wrapper around `api.scrift.app` with zero runtime
-dependencies that works in every modern JavaScript runtime — Node.js 18+,
+dependencies that works in every modern JavaScript runtime - Node.js 24 or later,
 browsers, Deno, Bun, Cloudflare Workers, Vercel Edge.
+
+[![CI](https://github.com/Vercroft/scrift-js/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/Vercroft/scrift-js/actions/workflows/ci.yml)
+[![OpenSSF Scorecard](https://api.scorecard.dev/projects/github.com/Vercroft/scrift-js/badge)](https://scorecard.dev/viewer/?uri=github.com/Vercroft/scrift-js)
+
+How a change ships:
+
+```mermaid
+flowchart LR
+  PR[Pull request] --> CI[CI and Gate summary]
+  CI --> Approval[Maintainer approval]
+  Approval --> Main[Merge to main]
+  Main --> Tag[Signed release tag]
+  Tag --> Release[Release workflow: tests, tarball, attested SBOM]
+  Release --> npm[npm, with provenance]
+```
 
 ## Install
 
@@ -43,7 +56,7 @@ console.log(byDomain.variants); // e.g. ['color', 'mono', 'wordmark']
 
 // Raw SVG markup (returned as a UTF-8 string)
 const svg = await client.svg.get('stripe', { variant: 'dark' });
-// Render the SVG safely — e.g. write it to disk, pass it to a sanitizer,
+// Render the SVG safely - e.g. write it to disk, pass it to a sanitizer,
 // or parse it with DOMParser before inserting into the DOM.
 ```
 
@@ -103,13 +116,13 @@ try {
   const brand = await client.catalog.get('nonexistent');
 } catch (err) {
   if (err instanceof NotFoundError) {
-    // 404 — brand does not exist
+    // 404 - brand does not exist
   } else if (err instanceof AuthenticationError) {
-    // 401 — bad or missing API key
+    // 401 - bad or missing API key
   } else if (err instanceof ScriftRateLimitError) {
-    // 429 — includes err.retryAfter (seconds or null) from Retry-After
+    // 429 - includes err.retryAfter (seconds or null) from Retry-After
   } else if (err instanceof ValidationError) {
-    // 422 — server rejected the request parameters
+    // 422 - server rejected the request parameters
   } else if (err instanceof ScriftError) {
     // Everything else: 5xx, network failures, timeouts
     console.error(err.statusCode, err.errorCode, err.message);
@@ -129,9 +142,9 @@ try {
 
 Every error exposes:
 
-- `message` — human-readable description
-- `statusCode` — HTTP status (when available)
-- `errorCode` — machine-readable code from the API (e.g. `"service_not_found"`)
+- `message` - human-readable description
+- `statusCode` - HTTP status (when available)
+- `errorCode` - machine-readable code from the API (e.g. `"service_not_found"`)
 
 `ScriftRateLimitError` additionally exposes `retryAfter` (`number | null`,
 seconds) parsed from the `Retry-After` header. The `RateLimitError` name is a
@@ -141,30 +154,40 @@ backward-compatible alias for the same class.
 
 The SDK retries **exactly once** on a 429 response, respecting the
 `Retry-After` header and capping the backoff at 30 seconds. It never retries
-other 4xx errors — those fail fast. If the retry also returns 429, a
+other 4xx errors - those fail fast. If the retry also returns 429, a
 `ScriftRateLimitError` is raised.
 
 ## Works everywhere
 
 `scrift-sdk` uses only the Fetch API and `AbortController`, so it runs in:
 
-- Node.js 18+ (18/20/22/24)
+- Node.js 24 and 26
 - Modern browsers (Chrome, Firefox, Safari, Edge)
 - Deno
 - Bun
 - Cloudflare Workers
 - Vercel Edge Runtime
-- AWS Lambda (Node 18+ runtime)
+- AWS Lambda (Node 24 or later runtime)
 
 Zero runtime dependencies. The entire library ships as a single ~10 KB file.
+
+## Support
+
+- Questions: [support@scrift.app](mailto:support@scrift.app)
+- Bugs: [GitHub Issues](https://github.com/Vercroft/scrift-js/issues)
+- Security issues: report them privately through the repository's
+  [Security tab](https://github.com/Vercroft/scrift-js/security) ("Report a vulnerability"), never in a
+  public issue.
 
 ## Links
 
 - Homepage: [https://scrift.app](https://scrift.app)
 - API docs: [https://scrift.app/docs](https://scrift.app/docs)
-- Issues: [github.com/phazeo/scrift-js/issues](https://github.com/phazeo/scrift-js/issues)
-- Python SDK: [github.com/phazeo/scrift-python](https://github.com/phazeo/scrift-python)
+- Issues: [github.com/Vercroft/scrift-js/issues](https://github.com/Vercroft/scrift-js/issues)
+- Python SDK: [github.com/Vercroft/scrift-python](https://github.com/Vercroft/scrift-python)
+- Contributing: [docs/CONTRIBUTING.md](./docs/CONTRIBUTING.md)
+- Architecture: [docs/ARCHITECTURE.md](./docs/ARCHITECTURE.md)
 
 ## License
 
-MIT — see [LICENSE](./LICENSE).
+MIT - see [LICENSE](./LICENSE).

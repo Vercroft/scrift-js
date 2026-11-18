@@ -1,0 +1,58 @@
+name: Links
+
+on:
+  pull_request:
+  schedule:
+    - cron: "17 5 * * 1"
+
+permissions: {}
+
+# lychee is downloaded by version and checked against the release asset's SHA-256 before it runs, in both
+# jobs (written out twice: zizmor analyses YAML anchors less precisely).
+# The release's published digest and a hash of our own download agreed when this was written.
+env:
+  LYCHEE_VERSION: lychee-v0.24.2
+  LYCHEE_SHA256: 1f4e0ef7f6554a6ed33dd7ac144fb2e1bbed98598e7af973042fc5cd43951c9a
+
+jobs:
+  offline:
+    name: Local links
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Install lychee (checksum-verified)
+        run: |
+          cd "$RUNNER_TEMP"
+          curl -sSfL -o lychee.tar.gz "https://github.com/lycheeverse/lychee/releases/download/${LYCHEE_VERSION}/lychee-x86_64-unknown-linux-gnu.tar.gz"
+          echo "${LYCHEE_SHA256}  lychee.tar.gz" | sha256sum -c -
+          tar -xzf lychee.tar.gz --strip-components=1 lychee-x86_64-unknown-linux-gnu/lychee
+          echo "$RUNNER_TEMP" >> "$GITHUB_PATH"
+      - name: Check the links between the repository's own files
+        run: lychee --offline --no-progress './**/*.md'
+
+  external:
+    name: External links
+    if: github.event_name == 'schedule'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Install lychee (checksum-verified)
+        run: |
+          cd "$RUNNER_TEMP"
+          curl -sSfL -o lychee.tar.gz "https://github.com/lycheeverse/lychee/releases/download/${LYCHEE_VERSION}/lychee-x86_64-unknown-linux-gnu.tar.gz"
+          echo "${LYCHEE_SHA256}  lychee.tar.gz" | sha256sum -c -
+          tar -xzf lychee.tar.gz --strip-components=1 lychee-x86_64-unknown-linux-gnu/lychee
+          echo "$RUNNER_TEMP" >> "$GITHUB_PATH"
+      - name: Check every link
+        run: lychee --no-progress './**/*.md'

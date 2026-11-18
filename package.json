@@ -12,14 +12,14 @@
     "typescript"
   ],
   "license": "MIT",
-  "author": "Scrift <hello@phazeo.com>",
+  "author": "Vercroft <support@scrift.app> (https://scrift.app)",
   "homepage": "https://scrift.app",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/phazeo/scrift-js.git"
+    "url": "git+https://github.com/Vercroft/scrift-js.git"
   },
   "bugs": {
-    "url": "https://github.com/phazeo/scrift-js/issues"
+    "url": "https://github.com/Vercroft/scrift-js/issues"
   },
   "type": "module",
   "main": "./dist/index.cjs",
@@ -38,26 +38,27 @@
     "LICENSE"
   ],
   "engines": {
-    "node": ">=18"
+    "node": ">=24"
   },
   "scripts": {
-    "lint": "eslint src/ tests/",
+    "lint": "eslint --max-warnings 0 src/ tests/",
     "build": "tsup",
-    "typecheck": "tsc --noEmit",
+    "typecheck": "tsc --noEmit && tsc -p tsconfig.tests.json",
     "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
     "prepublishOnly": "npm run typecheck && npm run test && npm run build"
   },
   "devDependencies": {
-    "@eslint/js": "^9.39.4",
-    "@types/node": "^25.5.2",
-    "@vitest/coverage-v8": "^4.1.4",
-    "eslint": "^9.39.4",
-    "globals": "^16.5.0",
-    "tsup": "^8.5.1",
-    "typescript": "^6.0.2",
-    "typescript-eslint": "^8.58.1",
-    "vitest": "^4.1.4"
+    "@eslint/js": "9.39.4",
+    "@types/node": "24.19.2",
+    "@vitest/coverage-v8": "4.1.4",
+    "eslint": "9.39.4",
+    "globals": "16.5.0",
+    "tsup": "8.5.1",
+    "typescript": "6.0.2",
+    "typescript-eslint": "8.58.1",
+    "vitest": "4.1.4",
+    "yaml": "2.9.1"
   }
 }

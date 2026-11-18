@@ -9,7 +9,7 @@ const tsconfigRootDir = path.dirname(fileURLToPath(import.meta.url));
 
 /**
  * ESLint flat config (ESLint 9+). TypeScript is linted with syntax-based
- * rules only — tests live outside `tsconfig.json` "include", so we do not
+ * rules only - tests live outside `tsconfig.json` "include", so we do not
  * use `projectService` (that would require a second tsconfig or widening
  * the main graph). `npm run typecheck` remains the authority for types.
  */
@@ -22,6 +22,10 @@ export default tseslint.config(
       '**/*.d.ts',
       '**/*.d.cts',
     ],
+  },
+  {
+    // A disable comment that no longer suppresses anything fails the lint.
+    linterOptions: { reportUnusedDisableDirectives: 'error' },
   },
   eslint.configs.recommended,
   ...tseslint.configs.recommended,

@@ -138,7 +138,7 @@ export class HttpClient {
     const fetchImpl = options.fetch ?? globalThis.fetch;
     if (typeof fetchImpl !== 'function') {
       throw new ScriftError(
-        'A global `fetch` implementation was not found. Upgrade to Node 18+ ' +
+        'A global `fetch` implementation was not found. Upgrade to Node 24 or later ' +
           'or pass a `fetch` option to the Scrift constructor.',
       );
     }
