@@ -17,7 +17,7 @@ Transient network errors are NOT retried automatically.
 
 Keep single-retry as permanent default. Reasons:
 
-1. Simplicity — no configurable retry loop before consumer demand exists
+1. Simplicity: no configurable retry loop before consumer demand exists
 2. 429 is the only transient API error worth auto-handling
 3. Network errors are caller responsibility
 
