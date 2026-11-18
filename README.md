@@ -162,8 +162,8 @@ Zero runtime dependencies. The entire library ships as a single ~10 KB file.
 
 - Homepage: [https://scrift.app](https://scrift.app)
 - API docs: [https://scrift.app/docs](https://scrift.app/docs)
-- Issues: [github.com/phazeo/scrift-js/issues](https://github.com/phazeo/scrift-js/issues)
-- Python SDK: [github.com/phazeo/scrift-python](https://github.com/phazeo/scrift-python)
+- Issues: [github.com/Vercroft/scrift-js/issues](https://github.com/Vercroft/scrift-js/issues)
+- Python SDK: [github.com/Vercroft/scrift-python](https://github.com/Vercroft/scrift-python)
 
 ## License
 

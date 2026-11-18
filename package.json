@@ -19,7 +19,7 @@
     "url": "git+https://github.com/Vercroft/scrift-js.git"
   },
   "bugs": {
-    "url": "https://github.com/phazeo/scrift-js/issues"
+    "url": "https://github.com/Vercroft/scrift-js/issues"
   },
   "type": "module",
   "main": "./dist/index.cjs",

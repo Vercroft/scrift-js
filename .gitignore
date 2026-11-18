@@ -42,24 +42,7 @@ pnpm-lock.yaml
 yarn.lock
 bun.lockb
 
-# AI tool artifacts — never commit these
-CLAUDE.md
-claude.md
-.claude/
-.cursor/
-.cursorignore
-.cursorrules
-.aider/
-.aider.tags.cache.v3/
-aider.conf.yml
-.continue/
-.copilot/
-.github/copilot-instructions.md
-
 # Temporary
 *.tmp
 *.temp
 .cache/
-
-#docs
-docs/ENGINEERING_GOLDEN_STANDARD.md

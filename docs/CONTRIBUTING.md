@@ -20,7 +20,7 @@ node --version  # must print v24.x or later
 ## Setup
 
 ```bash
-git clone https://github.com/phazeo/scrift-js.git
+git clone https://github.com/Vercroft/scrift-js.git
 cd scrift-js
 npm install
 ```
@@ -123,7 +123,7 @@ every single SDK call, so please:
 ## Reporting bugs
 
 Open an issue at
-[github.com/phazeo/scrift-js/issues](https://github.com/phazeo/scrift-js/issues)
+[github.com/Vercroft/scrift-js/issues](https://github.com/Vercroft/scrift-js/issues)
 with:
 
 - Your Node.js version (`node --version`).
@@ -134,4 +134,4 @@ with:
 
 ## Questions
 
-Email `hello@phazeo.com` or open a GitHub Discussion.
+Open an issue.

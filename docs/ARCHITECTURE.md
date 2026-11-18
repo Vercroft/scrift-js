@@ -3,7 +3,7 @@
 ## Overview
 
 `scrift-sdk` is a thin, strongly-typed HTTP client for `api.scrift.app`.
-It follows the same pattern as the Stripe, Anthropic, and OpenAI SDKs — a
+It follows the same pattern as widely used API SDKs such as Stripe's — a
 public client class that owns a transport layer and exposes resources, each
 of which is a flat collection of methods that delegate to the transport.
 
