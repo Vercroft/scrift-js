@@ -76,8 +76,7 @@ jobs:
       - name: Compare the suppressions in the code with .suppressions
         run: sh scripts/check-suppressions.sh
 
-  # No em or en dash in any file we write. Decision records are history and stay as written; the
-  # lockfile is generated.
+  # No em or en dash in any file we write. Only the lockfile is exempt: npm generates it.
   dashes:
     name: No em or en dashes
     runs-on: ubuntu-latest
@@ -90,7 +89,7 @@ jobs:
           persist-credentials: false
       - name: Find em and en dashes
         run: |
-          if git grep -nP '[\x{2013}\x{2014}]' -- . ':!package-lock.json' ':!docs/decisions/'; then
+          if git grep -nP '[\x{2013}\x{2014}]' -- . ':!package-lock.json'; then
             echo "Use a hyphen, a colon or a new sentence instead of the dashes above." >&2
             exit 1
           fi
