@@ -1,12 +1,24 @@
 # scrift-sdk
 
-[![CI](https://github.com/Vercroft/scrift-js/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/Vercroft/scrift-js/actions/workflows/ci.yml)
-[![OpenSSF Scorecard](https://api.scorecard.dev/projects/github.com/Vercroft/scrift-js/badge)](https://scorecard.dev/viewer/?uri=github.com/Vercroft/scrift-js)
-
 The official TypeScript SDK for the [Scrift](https://scrift.app) brand asset
 API. A thin, typed wrapper around `api.scrift.app` with zero runtime
 dependencies that works in every modern JavaScript runtime - Node.js 24 or later,
 browsers, Deno, Bun, Cloudflare Workers, Vercel Edge.
+
+[![CI](https://github.com/Vercroft/scrift-js/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/Vercroft/scrift-js/actions/workflows/ci.yml)
+[![OpenSSF Scorecard](https://api.scorecard.dev/projects/github.com/Vercroft/scrift-js/badge)](https://scorecard.dev/viewer/?uri=github.com/Vercroft/scrift-js)
+
+How a change ships:
+
+```mermaid
+flowchart LR
+  PR[Pull request] --> CI[CI and Gate summary]
+  CI --> Approval[Maintainer approval]
+  Approval --> Main[Merge to main]
+  Main --> Tag[Signed release tag]
+  Tag --> Release[Release workflow: tests, tarball, attested SBOM]
+  Release --> npm[npm, with provenance]
+```
 
 ## Install
 

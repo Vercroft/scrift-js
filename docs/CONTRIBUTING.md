@@ -29,7 +29,6 @@ Each row is what CI runs, in the job named in the last column.
 | Lint | `npm run lint` | Node 24, Node 26 |
 | Type check the SDK, then the SDK with the tests (`tsconfig.tests.json`) | `npm run typecheck` | Node 24, Node 26 |
 | Run the tests with the coverage floor of `vitest.config.ts` | `npm run test:coverage` | Node 24, Node 26 |
-| Run one test file | `npx vitest run tests/catalog.test.ts` | - |
 | Build the ESM, CJS and type declarations into `dist/` | `npm run build` | Node 24, Node 26 |
 | Check that every lint suppression names one rule, gives a reason and is listed in `.suppressions` | `sh scripts/check-suppressions.sh` | Suppressions are listed |
 | Find em and en dashes (use a hyphen, a colon or a new sentence; decision records stay as written) | `git grep -nP '[\x{2013}\x{2014}]' -- . ':!package-lock.json' ':!docs/decisions/'` | No em or en dashes |
