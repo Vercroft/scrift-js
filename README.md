@@ -5,7 +5,7 @@
 
 The official TypeScript SDK for the [Scrift](https://scrift.app) brand asset
 API. A thin, typed wrapper around `api.scrift.app` with zero runtime
-dependencies that works in every modern JavaScript runtime — Node.js 24 or later,
+dependencies that works in every modern JavaScript runtime - Node.js 24 or later,
 browsers, Deno, Bun, Cloudflare Workers, Vercel Edge.
 
 ## Install
@@ -44,7 +44,7 @@ console.log(byDomain.variants); // e.g. ['color', 'mono', 'wordmark']
 
 // Raw SVG markup (returned as a UTF-8 string)
 const svg = await client.svg.get('stripe', { variant: 'dark' });
-// Render the SVG safely — e.g. write it to disk, pass it to a sanitizer,
+// Render the SVG safely - e.g. write it to disk, pass it to a sanitizer,
 // or parse it with DOMParser before inserting into the DOM.
 ```
 
@@ -104,13 +104,13 @@ try {
   const brand = await client.catalog.get('nonexistent');
 } catch (err) {
   if (err instanceof NotFoundError) {
-    // 404 — brand does not exist
+    // 404 - brand does not exist
   } else if (err instanceof AuthenticationError) {
-    // 401 — bad or missing API key
+    // 401 - bad or missing API key
   } else if (err instanceof ScriftRateLimitError) {
-    // 429 — includes err.retryAfter (seconds or null) from Retry-After
+    // 429 - includes err.retryAfter (seconds or null) from Retry-After
   } else if (err instanceof ValidationError) {
-    // 422 — server rejected the request parameters
+    // 422 - server rejected the request parameters
   } else if (err instanceof ScriftError) {
     // Everything else: 5xx, network failures, timeouts
     console.error(err.statusCode, err.errorCode, err.message);
@@ -130,9 +130,9 @@ try {
 
 Every error exposes:
 
-- `message` — human-readable description
-- `statusCode` — HTTP status (when available)
-- `errorCode` — machine-readable code from the API (e.g. `"service_not_found"`)
+- `message` - human-readable description
+- `statusCode` - HTTP status (when available)
+- `errorCode` - machine-readable code from the API (e.g. `"service_not_found"`)
 
 `ScriftRateLimitError` additionally exposes `retryAfter` (`number | null`,
 seconds) parsed from the `Retry-After` header. The `RateLimitError` name is a
@@ -142,7 +142,7 @@ backward-compatible alias for the same class.
 
 The SDK retries **exactly once** on a 429 response, respecting the
 `Retry-After` header and capping the backoff at 30 seconds. It never retries
-other 4xx errors — those fail fast. If the retry also returns 429, a
+other 4xx errors - those fail fast. If the retry also returns 429, a
 `ScriftRateLimitError` is raised.
 
 ## Works everywhere
@@ -178,4 +178,4 @@ Zero runtime dependencies. The entire library ships as a single ~10 KB file.
 
 ## License
 
-MIT — see [LICENSE](./LICENSE).
+MIT - see [LICENSE](./LICENSE).

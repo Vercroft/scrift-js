@@ -9,7 +9,7 @@ const tsconfigRootDir = path.dirname(fileURLToPath(import.meta.url));
 
 /**
  * ESLint flat config (ESLint 9+). TypeScript is linted with syntax-based
- * rules only — tests live outside `tsconfig.json` "include", so we do not
+ * rules only - tests live outside `tsconfig.json` "include", so we do not
  * use `projectService` (that would require a second tsconfig or widening
  * the main graph). `npm run typecheck` remains the authority for types.
  */

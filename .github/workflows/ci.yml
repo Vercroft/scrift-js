@@ -76,6 +76,25 @@ jobs:
       - name: Compare the suppressions in the code with .suppressions
         run: sh scripts/check-suppressions.sh
 
+  # No em or en dash in any file we write. Decision records are history and stay as written; the
+  # lockfile is generated.
+  dashes:
+    name: No em or en dashes
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Find em and en dashes
+        run: |
+          if git grep -nP '[\x{2013}\x{2014}]' -- . ':!package-lock.json' ':!docs/decisions/'; then
+            echo "Use a hyphen, a colon or a new sentence instead of the dashes above." >&2
+            exit 1
+          fi
+
   # The one CI check the ruleset requires. The matrix check names carry the Node version and change
   # with it; this name does not. `if: always()` so a failed job cannot skip it, and it fails unless
   # every job it needs passed or was skipped. tests/ci/gate-summary.test.ts fails when a job in this
@@ -83,7 +102,7 @@ jobs:
   gate-summary:
     name: Gate summary
     if: always()
-    needs: [node, zizmor, suppressions]
+    needs: [node, zizmor, suppressions, dashes]
     runs-on: ubuntu-latest
     timeout-minutes: 5
     permissions: {}

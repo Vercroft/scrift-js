@@ -32,6 +32,7 @@ Each row is what CI runs, in the job named in the last column.
 | Run one test file | `npx vitest run tests/catalog.test.ts` | - |
 | Build the ESM, CJS and type declarations into `dist/` | `npm run build` | Node 24, Node 26 |
 | Check that every lint suppression names one rule, gives a reason and is listed in `.suppressions` | `sh scripts/check-suppressions.sh` | Suppressions are listed |
+| Find em and en dashes (use a hyphen, a colon or a new sentence; decision records stay as written) | `git grep -nP '[\x{2013}\x{2014}]' -- . ':!package-lock.json' ':!docs/decisions/'` | No em or en dashes |
 | Audit the workflows (set up once: `VENV="${TMPDIR:-/tmp}/scrift-js-ci-venv"; python3 -m venv "$VENV"; "$VENV/bin/pip" install --require-hashes -r .github/requirements/zizmor.txt`) | `"$VENV/bin/zizmor" --offline .github/workflows` | zizmor |
 | Check the links between the repository's own files | `lychee --offline --no-progress './**/*.md'` | Local links |
 | Scan the staged changes for secrets with `.gitleaks.toml` (CI scans the full history) | `pre-commit run gitleaks` | Secret scan / Full history |

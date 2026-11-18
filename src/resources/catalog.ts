@@ -1,5 +1,5 @@
 /**
- * Catalog resource — wraps `/v1/catalog*` and `/v1/search`.
+ * Catalog resource - wraps `/v1/catalog*` and `/v1/search`.
  *
  * Thin pass-through layer: every method delegates to `HttpClient.requestJson`.
  * Client-side argument validation throws {@link TypeError} before any HTTP

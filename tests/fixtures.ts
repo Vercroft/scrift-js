@@ -5,7 +5,7 @@
  * api.scrift.app, including the camelCase field names and the `_css` /
  * `_notice` underscore-prefixed keys.
  *
- * JSON bodies omit `rateLimit` — the SDK attaches it from `X-RateLimit-*`
+ * JSON bodies omit `rateLimit` - the SDK attaches it from `X-RateLimit-*`
  * headers in `http.ts`, not from the JSON body.
  */
 
@@ -17,7 +17,7 @@ import type {
   ServiceResponse,
 } from '../src/types.js';
 
-/** Raw API JSON for a service (no `rateLimit` — comes from headers). */
+/** Raw API JSON for a service (no `rateLimit` - comes from headers). */
 type ServiceBody = Omit<ServiceResponse, 'rateLimit'>;
 
 export const SERVICE_JSON: ServiceBody = {
@@ -197,7 +197,7 @@ export interface FetchCall {
  * Build a stubbed `fetch` that returns a queue of pre-canned responses.
  *
  * Each call pops the next `MockResponseInit` off the queue. If the queue
- * is exhausted, the stub throws — which surfaces "too many requests" bugs
+ * is exhausted, the stub throws - which surfaces "too many requests" bugs
  * immediately instead of letting them hide behind undefined behavior.
  */
 export function createFetchStub(queue: MockResponseInit[]): {

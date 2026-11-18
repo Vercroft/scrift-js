@@ -1,5 +1,5 @@
 /**
- * ScriftClient — the single public entry point for the SDK.
+ * ScriftClient - the single public entry point for the SDK.
  *
  * Usage:
  *
@@ -9,12 +9,12 @@
  *     const stripe = await client.catalog.get('stripe');
  *
  * The client owns a single {@link HttpClient} instance and attaches each
- * resource as a public field. Resources are cheap, stateless wrappers — the
+ * resource as a public field. Resources are cheap, stateless wrappers - the
  * real work (auth, retries, timeouts, error mapping) happens in `http.ts`.
  *
  * Unlike the Python SDK, there is no `close()` / context-manager story here
  * because `fetch` does not own a persistent connection pool that needs
- * teardown — the platform manages sockets for us.
+ * teardown - the platform manages sockets for us.
  */
 
 import { HttpClient } from './http.js';

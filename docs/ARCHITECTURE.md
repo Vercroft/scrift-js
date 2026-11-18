@@ -3,7 +3,7 @@
 ## Overview
 
 `scrift-sdk` is a thin, strongly-typed HTTP client for `api.scrift.app`.
-It follows the same pattern as widely used API SDKs such as Stripe's — a
+It follows the same pattern as widely used API SDKs such as Stripe's - a
 public client class that owns a transport layer and exposes resources, each
 of which is a flat collection of methods that delegate to the transport.
 
@@ -16,9 +16,9 @@ Vercel Edge, AWS Lambda. The SDK uses only web-standard `fetch` and
 ```
 src/
 ├── index.ts             Public entry point (re-exports only)
-├── client.ts            ScriftClient — attaches resources to one HttpClient
+├── client.ts            ScriftClient - attaches resources to one HttpClient
 ├── api-key.ts           API key format validation (constructor-time)
-├── http.ts              HttpClient — auth, retry, timeout, error mapping
+├── http.ts              HttpClient - auth, retry, timeout, error mapping
 ├── errors.ts            Error class hierarchy
 ├── types.ts             Types, models, and client-side validation helpers
 ├── version.ts           Version constant (baked into User-Agent)
@@ -59,7 +59,7 @@ Concrete rules, enforced in review:
    shape of error responses.
 
 3. **`errors.ts` imports nothing from the SDK.** Error classes are the
-   innermost layer — they have no knowledge of HTTP, resources, or types.
+   innermost layer - they have no knowledge of HTTP, resources, or types.
 
 4. **`types.ts` imports nothing.** It holds shared models and small
    client-side validation helpers used by resources.
@@ -100,7 +100,7 @@ behaviors are provided transparently:
 
 1. **Wait for the backend to ship the route.** Do not speculate shapes.
 2. Add any new response shapes to `src/types.ts`. Preserve the API's
-   camelCase field names exactly — the SDK does not reshape payloads.
+   camelCase field names exactly - the SDK does not reshape payloads.
 3. Open the appropriate resource file under `src/resources/` and add a
    method. It should be a one-liner that calls `this.http.requestJson`
    or `this.http.requestText` with the right path, query, and body.
@@ -128,7 +128,7 @@ more care. 99% of new endpoints should touch zero lines outside
 ## Never do this
 
 - Do not add new runtime dependencies. Zero-dep is a load-bearing
-  feature — it is what lets the SDK run on edge runtimes.
+  feature - it is what lets the SDK run on edge runtimes.
 - Do not catch errors inside resources. If a resource is catching, it
   is almost certainly leaking transport concerns.
 - Do not inspect `Response` objects outside `http.ts`.
@@ -142,9 +142,9 @@ more care. 99% of new endpoints should touch zero lines outside
 
 We follow [SemVer](https://semver.org/):
 
-- **PATCH** — bug fixes with no API changes.
-- **MINOR** — new methods or new optional parameters. Backward-compatible.
-- **MAJOR** — any breaking change to a method signature, error class, or
+- **PATCH** - bug fixes with no API changes.
+- **MINOR** - new methods or new optional parameters. Backward-compatible.
+- **MAJOR** - any breaking change to a method signature, error class, or
   response type.
 
 Never make breaking changes in patch or minor releases.
