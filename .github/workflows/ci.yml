@@ -32,16 +32,19 @@ jobs:
         with:
           node-version: ${{ matrix.node }}
           package-manager-cache: false
+      - uses: pnpm/setup@fa36a5ef7dcdefc3a7cb25655c122e00cf6e636e # v3.1.2
+        with:
+          install: false
       - name: Install (lockfile must be current)
-        run: npm ci
+        run: pnpm install --frozen-lockfile
       - name: Lint
-        run: npm run lint
+        run: pnpm run lint
       - name: Type check
-        run: npm run typecheck
+        run: pnpm run typecheck
       - name: Tests with the coverage floor
-        run: npm run test:coverage
+        run: pnpm run test:coverage
       - name: Build
-        run: npm run build
+        run: pnpm run build
       - name: Smoke test
         run: node -e "const s = require('./dist/index.cjs'); console.log('OK:', typeof s.ScriftClient)"
 
