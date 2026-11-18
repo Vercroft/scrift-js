@@ -60,6 +60,7 @@ supported Node versions.
 | `.github/dependabot.yml` | Monthly grouped updates for the actions, the npm packages and the CI tools |
 | `.gitleaks.toml`, `.gitleaksignore`, `.pre-commit-config.yaml` | The secret and personal-data rules, the history findings that are not secrets, and the git hook |
 | `.nvmrc` | The Node version that builds and publishes |
+| `.npmrc` | npm's supply-chain settings: install scripts are not run, and `npm install` saves exact versions |
 | `scripts/check-suppressions.sh`, `.suppressions` | The suppression check and the listing it compares against |
 | `tsconfig.tests.json` | Type-checks the tests too, so a stale `@ts-expect-error` fails |
 
