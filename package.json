@@ -16,7 +16,7 @@
   "homepage": "https://scrift.app",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/phazeo/scrift-js.git"
+    "url": "git+https://github.com/Vercroft/scrift-js.git"
   },
   "bugs": {
     "url": "https://github.com/phazeo/scrift-js/issues"

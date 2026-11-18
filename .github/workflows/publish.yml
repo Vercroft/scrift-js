@@ -11,8 +11,13 @@ jobs:
   publish:
     runs-on: ubuntu-latest
     timeout-minutes: 15
+    # npm's trusted publisher for this package names this workflow file and this environment.
+    environment: npm
     permissions:
       contents: read
+      # npm trusted publishing (OIDC, no token) and signing the SBOM attestation.
+      id-token: write
+      attestations: write
 
     steps:
       - name: Checkout
@@ -28,6 +33,15 @@ jobs:
           registry-url: 'https://registry.npmjs.org'
           package-manager-cache: false
 
+      # Trusted publishing needs npm 11.5.1 or later (docs.npmjs.com/trusted-publishers).
+      - name: Require npm 11.5.1 or later
+        run: |
+          node -e '
+            const [major, minor, patch] = process.argv[1].split(".").map(Number);
+            const ok = major > 11 || (major === 11 && (minor > 5 || (minor === 5 && patch >= 1)));
+            if (!ok) { console.error(`npm ${process.argv[1]} is older than 11.5.1`); process.exit(1); }
+          ' "$(npm --version)"
+
       - name: Install dependencies
         run: npm ci
 
@@ -40,7 +54,20 @@ jobs:
       - name: Smoke test
         run: node -e "const s = require('./dist/index.cjs'); console.log('OK:', typeof s.ScriftClient)"
 
-      - name: Publish
-        run: npm publish --access public
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+      # One tarball: the SBOM is attested against it, and it is what npm receives.
+      - name: Pack
+        run: npm pack --pack-destination "$RUNNER_TEMP/release"
+
+      - name: SBOM (CycloneDX)
+        run: npm sbom --sbom-format cyclonedx --omit dev > "$RUNNER_TEMP/release/scrift-sdk.cdx.json"
+
+      - name: Attest the SBOM against the tarball
+        uses: actions/attest@1e69f48acb82d1966a394da916b4c1698aa569d6 # v4.2.2
+        with:
+          subject-path: ${{ runner.temp }}/release/*.tgz
+          sbom-path: ${{ runner.temp }}/release/scrift-sdk.cdx.json
+
+      # Trusted publishing: npm exchanges the job's OIDC token, so no npm token exists, and it adds
+      # provenance by itself for a public package published from a public repository.
+      - name: Publish the attested tarball
+        run: npm publish "$RUNNER_TEMP"/release/*.tgz --access public
