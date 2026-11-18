@@ -17,12 +17,13 @@ updates:
         patterns: ["*"]
     open-pull-requests-limit: 3
 
+  # npm, pnpm and yarn all use the "npm" ecosystem.
   - package-ecosystem: npm
     directory: /
     schedule:
       interval: monthly
     cooldown:
-      default-days: 7
+      default-days: 7 # must match pnpm minimumReleaseAge (10080 minutes)
     groups:
       npm-minor-and-patch:
         applies-to: version-updates
@@ -38,7 +39,21 @@ updates:
         update-types: ["version-update:semver-major"]
     open-pull-requests-limit: 3
 
-  # The hash-pinned CI tools (zizmor).
+  # The pinned remote hooks in .pre-commit-config.yaml (local hooks have no rev).
+  - package-ecosystem: pre-commit
+    directory: /
+    schedule:
+      interval: monthly
+    cooldown:
+      default-days: 7
+    groups:
+      pre-commit-minor-and-patch:
+        applies-to: version-updates
+        patterns: ["*"]
+        update-types: ["minor", "patch"]
+    open-pull-requests-limit: 3
+
+  # The hash-pinned CI tools (pre-commit, zizmor).
   - package-ecosystem: pip
     directory: /.github/requirements
     schedule:

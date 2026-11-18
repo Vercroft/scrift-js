@@ -1,0 +1,26 @@
+name: dependency-age
+
+# Fails when a pull request locks a package version younger than 7 days: pnpm-workspace.yaml's
+# minimumReleaseAge (10080 minutes) applies to every entry of pnpm-lock.yaml, transitive ones too.
+# GitHub Actions and pre-commit hook pins are covered by Dependabot's cooldown.
+on:
+  pull_request:
+
+permissions: {}
+
+jobs:
+  dependency-age:
+    name: dependency-age
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: pnpm/setup@fa36a5ef7dcdefc3a7cb25655c122e00cf6e636e # v3.1.2
+        with:
+          install: false
+      - name: The lockfile holds only versions at least 7 days old
+        run: pnpm install --frozen-lockfile --lockfile-only

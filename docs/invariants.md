@@ -23,7 +23,7 @@ of its own.
 
 - `src/resources/` imports only `http.ts` and `types.ts`, never calls `fetch` and never catches; `http.ts` imports only
   `errors.ts`, `types.ts`, `version.ts` and `api-key.ts`; `errors.ts` and `types.ts` import nothing from the SDK
-  (`eslint.config.mjs`, `npm run lint`).
+  (`eslint.config.mjs`, `pnpm run lint`).
 - `src/index.ts` only re-exports (checked in review).
 
 ## Package

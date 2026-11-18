@@ -37,8 +37,8 @@ Thumbs.db
 .idea/
 
 # Package manager locks we don't want in this repo
-# (we commit package-lock.json; ignore alternate managers' locks)
-pnpm-lock.yaml
+# (we commit pnpm-lock.yaml; ignore other managers' locks)
+package-lock.json
 yarn.lock
 bun.lockb
 

@@ -32,22 +32,25 @@ jobs:
         with:
           node-version: ${{ matrix.node }}
           package-manager-cache: false
+      - uses: pnpm/setup@fa36a5ef7dcdefc3a7cb25655c122e00cf6e636e # v3.1.2
+        with:
+          install: false
       - name: Install (lockfile must be current)
-        run: npm ci
+        run: pnpm install --frozen-lockfile
       - name: Lint
-        run: npm run lint
+        run: pnpm run lint
       - name: Type check
-        run: npm run typecheck
+        run: pnpm run typecheck
       - name: Tests with the coverage floor
-        run: npm run test:coverage
+        run: pnpm run test:coverage
       - name: Build
-        run: npm run build
+        run: pnpm run build
       - name: Smoke test
         run: node -e "const s = require('./dist/index.cjs'); console.log('OK:', typeof s.ScriftClient)"
 
-  # Static analysis of the workflows, from a hash-pinned zizmor.
-  zizmor:
-    name: zizmor
+  # Every small check is a hook in .pre-commit-config.yaml; this job runs them all once.
+  repository-checks:
+    name: Repository checks
     runs-on: ubuntu-latest
     timeout-minutes: 10
     permissions:
@@ -56,43 +59,20 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
-      - name: Audit the workflows
-        run: |
-          python3 -m venv "$RUNNER_TEMP/venv"
-          "$RUNNER_TEMP/venv/bin/pip" install --quiet --require-hashes -r .github/requirements/zizmor.txt
-          "$RUNNER_TEMP/venv/bin/zizmor" --offline .github/workflows
-
-  # Every lint suppression names one rule, gives a reason and is listed in .suppressions.
-  suppressions:
-    name: Suppressions are listed
-    runs-on: ubuntu-latest
-    timeout-minutes: 5
-    permissions:
-      contents: read
-    steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      # Only runs the tools: pinned to a version every pinned package has a wheel for.
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
         with:
-          persist-credentials: false
-      - name: Compare the suppressions in the code with .suppressions
-        run: sh scripts/check-suppressions.sh
-
-  # No em or en dash in any file we write. Only the lockfile is exempt: npm generates it.
-  dashes:
-    name: No em or en dashes
-    runs-on: ubuntu-latest
-    timeout-minutes: 5
-    permissions:
-      contents: read
-    steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-        with:
-          persist-credentials: false
-      - name: Find em and en dashes
+          python-version: "3.14.10"
+      # gitleaks scans staged changes, and CI has none; the Secret scan check scans the full history.
+      - name: Run every hook
+        env:
+          SKIP: gitleaks
         run: |
-          if git grep -nP '[\x{2013}\x{2014}]' -- . ':!package-lock.json'; then
-            echo "Use a hyphen, a colon or a new sentence instead of the dashes above." >&2
-            exit 1
-          fi
+          python -m venv "$RUNNER_TEMP/venv"
+          "$RUNNER_TEMP/venv/bin/pip" install --quiet --require-hashes --only-binary :all: \
+            -r .github/requirements/pre-commit.txt -r .github/requirements/zizmor.txt
+          export PATH="$RUNNER_TEMP/venv/bin:$PATH"
+          pre-commit run --all-files --hook-stage manual --show-diff-on-failure
 
   # The one CI check the ruleset requires. The matrix check names carry the Node version and change
   # with it; this name does not. `if: always()` so a failed job cannot skip it, and it fails unless
@@ -101,7 +81,7 @@ jobs:
   gate-summary:
     name: Gate summary
     if: always()
-    needs: [node, zizmor, suppressions, dashes]
+    needs: [node, repository-checks]
     runs-on: ubuntu-latest
     timeout-minutes: 5
     permissions: {}
