@@ -305,7 +305,7 @@ describe('parseRateLimitHeaders', () => {
 
 describe('client construction', () => {
   it('requires an API key', () => {
-    // @ts-expect-error – deliberately missing the required field.
+    // @ts-expect-error -- the test passes no apiKey to prove the runtime check rejects it
     expect(() => new Scrift({})).toThrow(TypeError);
   });
 

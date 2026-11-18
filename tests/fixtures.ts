@@ -69,7 +69,7 @@ export const BRAND_JSON: BrandBody = {
   _notice: 'Provided by Scrift',
 };
 
-type ListBody = Omit<CatalogListResponse, 'rateLimit'>;
+type ListBody = Omit<CatalogListResponse, 'rateLimit' | 'items'> & { items: ServiceBody[] };
 
 export const LIST_JSON: ListBody = {
   items: [SERVICE_JSON, GITHUB_JSON],
@@ -78,7 +78,9 @@ export const LIST_JSON: ListBody = {
   offset: 0,
 };
 
-type BatchBody = Omit<BatchResponse, 'rateLimit'>;
+type BatchBody = Omit<BatchResponse, 'rateLimit' | 'results'> & {
+  results: Record<string, ServiceBody | null>;
+};
 
 export const BATCH_JSON: BatchBody = {
   results: {
@@ -89,7 +91,7 @@ export const BATCH_JSON: BatchBody = {
   notFound: ['nonexistent'],
 };
 
-type SearchBody = Omit<SearchResponse, 'rateLimit'>;
+type SearchBody = Omit<SearchResponse, 'rateLimit' | 'matches'> & { matches: ServiceBody[] };
 
 export const SEARCH_JSON: SearchBody = {
   matches: [SERVICE_JSON],

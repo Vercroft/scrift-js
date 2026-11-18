@@ -27,13 +27,18 @@ Each row is what CI runs, in the job named in the last column.
 | To | Run | CI job |
 |---|---|---|
 | Lint | `npm run lint` | Node 24, Node 26 |
-| Type check | `npm run typecheck` | Node 24, Node 26 |
+| Type check the SDK, then the SDK with the tests (`tsconfig.tests.json`) | `npm run typecheck` | Node 24, Node 26 |
 | Run the tests with the coverage floor of `vitest.config.ts` | `npm run test:coverage` | Node 24, Node 26 |
 | Run one test file | `npx vitest run tests/catalog.test.ts` | - |
 | Build the ESM, CJS and type declarations into `dist/` | `npm run build` | Node 24, Node 26 |
+| Check that every lint suppression names one rule, gives a reason and is listed in `.suppressions` | `sh scripts/check-suppressions.sh` | Suppressions are listed |
 | Audit the workflows (set up once: `VENV="${TMPDIR:-/tmp}/scrift-js-ci-venv"; python3 -m venv "$VENV"; "$VENV/bin/pip" install --require-hashes -r .github/requirements/zizmor.txt`) | `"$VENV/bin/zizmor" --offline .github/workflows` | zizmor |
 | Check the links between the repository's own files | `lychee --offline --no-progress './**/*.md'` | Local links |
 | Scan the staged changes for secrets with `.gitleaks.toml` (CI scans the full history) | `pre-commit run gitleaks` | Secret scan / Full history |
+
+A lint suppression follows the organisation's
+[suppression rules](https://github.com/Vercroft/engineering-practices/blob/main/docs/suppressions.md): one rule,
+a reason on the line, and a line in `.suppressions` added in the same pull request.
 
 A pull request needs these checks: `Gate summary` (it passes only when every CI job passed or was
 skipped), `Secret scan / Full history`, `Analyze (actions)`, `Analyze (javascript-typescript)` and
@@ -55,5 +60,7 @@ supported Node versions.
 | `.github/dependabot.yml` | Monthly grouped updates for the actions, the npm packages and the CI tools |
 | `.gitleaks.toml`, `.gitleaksignore`, `.pre-commit-config.yaml` | The secret and personal-data rules, the history findings that are not secrets, and the git hook |
 | `.nvmrc` | The Node version that builds and publishes |
+| `scripts/check-suppressions.sh`, `.suppressions` | The suppression check and the listing it compares against |
+| `tsconfig.tests.json` | Type-checks the tests too, so a stale `@ts-expect-error` fails |
 
 `dist/` and `coverage/` are generated; never edit or commit them.

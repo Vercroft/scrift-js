@@ -1,0 +1,2 @@
+tests/errors.test.ts: // @ts-expect-error -- the test passes no apiKey to prove the runtime check rejects it
+tests/raster.test.ts: // @ts-expect-error -- an invalid size on purpose, to test the runtime validation

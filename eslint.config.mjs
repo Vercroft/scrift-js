@@ -23,6 +23,10 @@ export default tseslint.config(
       '**/*.d.cts',
     ],
   },
+  {
+    // A disable comment that no longer suppresses anything fails the lint.
+    linterOptions: { reportUnusedDisableDirectives: 'error' },
+  },
   eslint.configs.recommended,
   ...tseslint.configs.recommended,
   {
