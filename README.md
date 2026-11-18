@@ -1,6 +1,7 @@
 # scrift-sdk
 
-[![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)](./LICENSE)
+[![CI](https://github.com/Vercroft/scrift-js/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/Vercroft/scrift-js/actions/workflows/ci.yml)
+[![OpenSSF Scorecard](https://api.scorecard.dev/projects/github.com/Vercroft/scrift-js/badge)](https://scorecard.dev/viewer/?uri=github.com/Vercroft/scrift-js)
 
 The official TypeScript SDK for the [Scrift](https://scrift.app) brand asset
 API. A thin, typed wrapper around `api.scrift.app` with zero runtime
@@ -164,6 +165,8 @@ Zero runtime dependencies. The entire library ships as a single ~10 KB file.
 - API docs: [https://scrift.app/docs](https://scrift.app/docs)
 - Issues: [github.com/Vercroft/scrift-js/issues](https://github.com/Vercroft/scrift-js/issues)
 - Python SDK: [github.com/Vercroft/scrift-python](https://github.com/Vercroft/scrift-python)
+- Contributing: [docs/CONTRIBUTING.md](./docs/CONTRIBUTING.md)
+- Architecture: [docs/ARCHITECTURE.md](./docs/ARCHITECTURE.md)
 
 ## License
 

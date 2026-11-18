@@ -6,6 +6,13 @@ this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Changed
+
+- Releases are published with npm trusted publishing, so each one carries npm
+  provenance, and come with a CycloneDX SBOM attested against the published
+  tarball.
+- The copyright holder is Vercroft.
+
 ### Removed
 
 - **Breaking:** Node.js 18, 20 and 22 are no longer supported; the minimum is
