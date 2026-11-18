@@ -4,7 +4,7 @@
 
 The official TypeScript SDK for the [Scrift](https://scrift.app) brand asset
 API. A thin, typed wrapper around `api.scrift.app` with zero runtime
-dependencies that works in every modern JavaScript runtime — Node.js 18+,
+dependencies that works in every modern JavaScript runtime — Node.js 24 or later,
 browsers, Deno, Bun, Cloudflare Workers, Vercel Edge.
 
 ## Install
@@ -148,13 +148,13 @@ other 4xx errors — those fail fast. If the retry also returns 429, a
 
 `scrift-sdk` uses only the Fetch API and `AbortController`, so it runs in:
 
-- Node.js 18+ (18/20/22/24)
+- Node.js 24 and 26
 - Modern browsers (Chrome, Firefox, Safari, Edge)
 - Deno
 - Bun
 - Cloudflare Workers
 - Vercel Edge Runtime
-- AWS Lambda (Node 18+ runtime)
+- AWS Lambda (Node 24 or later runtime)
 
 Zero runtime dependencies. The entire library ships as a single ~10 KB file.
 

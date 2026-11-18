@@ -6,6 +6,11 @@ this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Removed
+
+- **Breaking:** Node.js 18, 20 and 22 are no longer supported; the minimum is
+  Node.js 24 (`engines`: `>=24`).
+
 ## [0.2.0] - 2026-04-12
 
 ### Added

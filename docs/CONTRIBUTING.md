@@ -6,16 +6,15 @@ PR to, and the process for shipping changes.
 
 ## Prerequisites
 
-- **Node.js 18 or higher.** The SDK and test suite both rely on the
-  built-in `fetch`, `AbortController`, and `URL` APIs available in Node
-  18+.
+- **Node.js 24 or later.** `.nvmrc` names the version CI builds and
+  publishes with.
 - **npm** (bundled with Node). Other package managers (`pnpm`, `yarn`,
   `bun`) will work for installing deps, but CI runs against `npm`.
 
 Check your Node version:
 
 ```bash
-node --version  # must print v18.x or higher
+node --version  # must print v24.x or later
 ```
 
 ## Setup

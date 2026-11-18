@@ -7,7 +7,7 @@ It follows the same pattern as the Stripe, Anthropic, and OpenAI SDKs — a
 public client class that owns a transport layer and exposes resources, each
 of which is a flat collection of methods that delegate to the transport.
 
-**Target runtimes:** Node.js 18+, browsers, Deno, Bun, Cloudflare Workers,
+**Target runtimes:** Node.js 24 or later, browsers, Deno, Bun, Cloudflare Workers,
 Vercel Edge, AWS Lambda. The SDK uses only web-standard `fetch` and
 `AbortController`, so it has zero runtime dependencies.
 
